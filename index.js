@@ -19,18 +19,24 @@ const getCommitSubjects = async () => {
   return promise;
 }
 
-const runShellCmd = async (command) => {
-  return exec(command);
+const verifySubject = async (subject) => {
+  const MAX_SUBJECT_LENGTH = core.getInput('default-branch');
+  if (subject.length > MAX_SUBJECT_LENGTH)
+    core.setFailed(`Subject ${subject} is longer than ${MAX_SUBJECT_LENGHT} characters`)
+  else
+    core.debug(`Subject ${subject} is good!`);
 }
 
-const run = async () => {
-  const SUBJECT_LENGTH = core.getInput('default-branch');
-
+const verifyCommitSubjects = async () => {
   getCommitSubjects()
-    .then((result) => console.log('resolved:', result))
-    .catch((error) => {
+    .then((subjectData) => {
+      let subjects = subjectData.split('\n');
+      for (let subject of subjects){
+        verifySubject(subject).catch(error => core.setFailed(error));;
+      }
+    }).catch((error) => {
       core.setFailed(error);
     });
 }
 
-run()
+verifyCommitSubjects()
