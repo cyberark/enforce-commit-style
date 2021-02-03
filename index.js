@@ -19,12 +19,29 @@ const getCommitSubjects = async () => {
   return promise;
 }
 
-const verifySubject = async (subject) => {
-  const MAX_SUBJECT_LENGTH = core.getInput('default-branch');
-  if (subject.length > MAX_SUBJECT_LENGTH)
-    core.setFailed(`Subject ${subject} is longer than ${MAX_SUBJECT_LENGHT} characters`)
-  else
-    core.debug(`Subject ${subject} is good!`);
+class Subject{
+  static MAX_SUBJECT_LENGTH = core.getInput('subject-length');
+  constructor(subject){
+    this.subject = subject;
+  }
+
+  _verifyLength(){
+    if (this.subject.length > Subject.MAX_SUBJECT_LENGTH)
+      core.setFailed(`Commit subject "${this.subject}" is longer than ${Subject.MAX_SUBJECT_LENGTH} characters`)
+  }
+
+  _verifyCapital(){
+    if (this.subject[0].toUpperCase() !== this.subject[0])
+      core.setFailed(`Commit subject "${this.subject}" must begin with a capital`);
+  }
+
+  verify(){
+    if (this.subject === '')
+      return;
+    this._verifyLength();
+    this._verifyCapital();
+    core.debug(`Verifying subject line ${this.subject}`);
+  }
 }
 
 const verifyCommitSubjects = async () => {
@@ -32,7 +49,7 @@ const verifyCommitSubjects = async () => {
     .then((subjectData) => {
       let subjects = subjectData.split('\n');
       for (let subject of subjects){
-        verifySubject(subject).catch(error => core.setFailed(error));;
+        new Subject(subject).verify();
       }
     }).catch((error) => {
       core.setFailed(error);
