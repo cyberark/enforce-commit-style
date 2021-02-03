@@ -1,0 +1,10 @@
+name: 'Enforce Commit Style'
+description: 'Enforce commit message style'
+inputs:
+  subject-length:
+    description: 'Max length of the commit subject message'
+    requred: false
+    default: 55
+runs:
+  using: 'node12'
+  main: 'index.js'
