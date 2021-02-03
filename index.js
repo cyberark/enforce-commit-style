@@ -26,12 +26,14 @@ class Subject{
   }
 
   _verifyLength(){
-    if (this.subject.length > this.MAX_SUBJECT_LENGTH)
-      core.setFailed(`Subject "${this.subject}" is longer than ${this.MAX_SUBJECT_LENGHT} characters`)
+    if (this.subject.length > Subject.MAX_SUBJECT_LENGTH){
+      core.setFailed(`Subject "${this.subject}" is longer than ${Subject.MAX_SUBJECT_LENGHT} characters`)
+      core.debug(`Failed length ${this.subject.length}`)
+    }
   }
-
+  
   _verifyCapital(){
-    if (this.subject[0].toUpper() !== this.subject[0])
+    if (this.subject[0].toUpperCase() !== this.subject[0])
       core.setFailed(`Subject "${this.subject}" must begin with a capital`);
   }
 
@@ -40,7 +42,7 @@ class Subject{
       return;
     this._verifyLength();
     this._verifyCapital();
-    core.debug(`Verifying subject line ${this.subject}`);
+    core.debug(`Verifying subject line "${this.subject}" length ${this.subject.length}`);
   }
 }
 
