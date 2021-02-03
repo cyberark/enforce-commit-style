@@ -2,23 +2,35 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const { exec } = require('child_process');
 
-const runShellCmd = async (command) => {
-  console.log(command);
-  return exec(command, (error, stdout, stderr) => {
-    console.log("Command Output: ", stdout, stderr, error);
+const DEFAULT_BRANCH = github.context.payload.repository.master_branch;
+const GET_SUBJECTS_COMMAND = 
+ `git log --no-merges --no-abbrev --format=%s origin/${DEFAULT_BRANCH}..HEAD`;
+
+const getCommitSubjects = async () => {
+  const promise = new Promise((resolve, reject) => {
+    exec(GET_SUBJECTS_COMMAND, (err, stdout, _) => {
+      if (err !== null){
+        reject(err);
+      }
+      resolve(stdout);
+    });
   });
+
+  return promise;
+}
+
+const runShellCmd = async (command) => {
+  return exec(command);
 }
 
 const run = async () => {
   const SUBJECT_LENGTH = core.getInput('default-branch');
 
-  try {
-    let res = await runShellCmd(`git --no-pager log --no-merges --no-abbrev --format=%H origin/${github.context.payload.repository.master_branch}..HEAD`);
-    console.log(res);
-    res.on('exit', code => console.log(code));
-  } catch (error) {
-    core.setFailed(error)
-  }
+  getCommitSubjects()
+    .then((result) => console.log('resolved:', result))
+    .catch((error) => {
+      core.setFailed(error);
+    });
 }
 
 run()
