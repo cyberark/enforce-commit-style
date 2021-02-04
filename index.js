@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const { exec } = require('child_process');
 
+const MAX_SUBJECT_LENGTH = core.getInput('subject-length');
 const DEFAULT_BRANCH = github.context.payload.repository.master_branch;
 const GET_SUBJECTS_COMMAND = 
  `git log --no-merges --no-abbrev --format=%s origin/${DEFAULT_BRANCH}..HEAD`;
@@ -19,28 +20,25 @@ const getCommitSubjects = async () => {
   return promise;
 }
 
-class Subject{
-  static MAX_SUBJECT_LENGTH = core.getInput('subject-length');
-  constructor(subject){
-    this.subject = subject;
+const Subject = function(subject){
+  function verifyLength(){
+    if (subject.length > MAX_SUBJECT_LENGTH)
+      core.setFailed(`Commit subject "${subject}" is longer than ${MAX_SUBJECT_LENGTH} characters`)
   }
 
-  _verifyLength(){
-    if (this.subject.length > Subject.MAX_SUBJECT_LENGTH)
-      core.setFailed(`Commit subject "${this.subject}" is longer than ${Subject.MAX_SUBJECT_LENGTH} characters`)
+  function verifyCapital(){
+    if (subject[0].toUpperCase() !== subject[0])
+      core.setFailed(`Commit subject "${subject}" must begin with a capital`);
   }
 
-  _verifyCapital(){
-    if (this.subject[0].toUpperCase() !== this.subject[0])
-      core.setFailed(`Commit subject "${this.subject}" must begin with a capital`);
-  }
-
-  verify(){
-    if (this.subject === '')
-      return;
-    this._verifyLength();
-    this._verifyCapital();
-    core.debug(`Verifying subject line ${this.subject}`);
+  return {
+    subject: subject,
+    verify: function() {
+      if (subject === '')
+        return;
+      verifyLength();
+      verifyCapital();
+    }
   }
 }
 
@@ -49,7 +47,7 @@ const verifyCommitSubjects = async () => {
     .then((subjectData) => {
       let subjects = subjectData.split('\n');
       for (let subject of subjects){
-        new Subject(subject).verify();
+        Subject(subject).verify();
       }
     }).catch((error) => {
       core.setFailed(error);
