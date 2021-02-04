@@ -4,6 +4,7 @@ const { exec } = require('child_process');
 
 const MAX_SUBJECT_LENGTH = core.getInput('subject-length');
 const DEFAULT_BRANCH = github.context.payload.repository.master_branch;
+core.debug(github.context);
 const GET_SUBJECTS_COMMAND = 
  `git log --no-merges --no-abbrev --format=%s origin/${DEFAULT_BRANCH}..HEAD`;
 
