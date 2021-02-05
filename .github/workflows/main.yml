@@ -3,7 +3,7 @@ name: Enforce Commit Style
 on: [push]
 
 jobs:
-  style_job:
+  style_job_local:
     runs-on: ubuntu-latest
     name: Enforce Commit Style
 
