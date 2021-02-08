@@ -3,7 +3,7 @@ const github = require('@actions/github');
 const { exec } = require('child_process');
 
 const MAX_SUBJECT_LENGTH = core.getInput('subject-length');
-const DEFAULT_BRANCH = github.context.payload.repository.master_branch;
+const DEFAULT_BRANCH = github.context.payload.repository.default_branch;
 const GET_SUBJECTS_COMMAND = 
  `git log --no-merges --no-abbrev --format=%s origin/${DEFAULT_BRANCH}..HEAD`;
 
