@@ -26,7 +26,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Check commit style
-      uses: telday/enforce-commit-style@v1
+      uses: cyberark/enforce-commit-style@v1
       with:
         subject-length: 80
 ```
