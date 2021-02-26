@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/telday/enforce-commit-style.git"
+    "url": "git+https://github.com/cyberark/enforce-commit-style.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/telday/enforce-commit-style/issues"
+    "url": "https://github.com/cyberark/enforce-commit-style/issues"
   },
-  "homepage": "https://github.com/telday/enforce-commit-style#readme",
+  "homepage": "https://github.com/cyberark/enforce-commit-style#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0"
