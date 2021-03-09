@@ -31,6 +31,12 @@ const Subject = function(subject){
       core.setFailed(`Commit subject "${subject}" must begin with a capital`);
   }
 
+  function verifyNoMerge(){
+    if (subject.startsWith(`Merge branch '${DEFAULT_BRANCH}' into`))
+      core.setFailed(`Commits must not be merged from '${DEFAULT_BRANCH}'. ` +
+          `Use 'git fetch && git rebase origin/${DEFAULT_BRANCH}' instead`);
+  }
+
   return {
     subject: subject,
     verify: function() {
@@ -38,6 +44,7 @@ const Subject = function(subject){
         return;
       verifyLength();
       verifyCapital();
+      verifyNoMerge();
     }
   }
 }
