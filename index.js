@@ -31,6 +31,11 @@ const Subject = function(subject){
       core.setFailed(`Commit subject "${subject}" must begin with a capital`);
   }
 
+  function verifyNoPeriod(){
+    if (subject.substr(subject.length - 1) === '.')
+      core.setFailed(`Commit subject "${subject}" must not end with a period`);
+  }
+
   return {
     subject: subject,
     verify: function() {
@@ -38,6 +43,7 @@ const Subject = function(subject){
         return;
       verifyLength();
       verifyCapital();
+      verifyNoPeriod();
     }
   }
 }
