@@ -5,6 +5,9 @@ This action enforces some basic guidelines on commit subject messages.
 It will fail if:
 * The commit subject is longer than the `subject-length` variable (default: 55)
 * The commit subject does not begin with a capital letter
+* The commit subject ends with a period
+
+Some of the guidelines above are based on this [blog post](https://chris.beams.io/posts/git-commit/).
 
 ## Usage
 
